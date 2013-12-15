@@ -47,6 +47,9 @@ local MakeGame = function()
 		Imm.BeginDefaultShader();
 		Imm.BeginDraw();
 
+		Gfx.Enable( Gfx.BLEND );
+		Gfx.SetBlendFunc( Gfx.SRC_ALPHA, Gfx.ONE_MINUS_SRC_ALPHA );
+
 		Imm.Color( Gfx.GREEN, 0.5f );
         Imm.DrawCircle( g_core.screenDimen*0.5, 80.0f );
 
