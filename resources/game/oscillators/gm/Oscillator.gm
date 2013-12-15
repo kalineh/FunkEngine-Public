@@ -3,34 +3,53 @@ global MakeOscillator = function( a_args )
 {
     local Oscillator = table();
 
+    Oscillator.threads = table();
+
     Oscillator.phase = a_args.phase;
     Oscillator.frequency = a_args.frequency;
     Oscillator.amplitude = a_args.amplitude;
+
+    Oscillator.angle = Oscillator.phase;
 
     Oscillator.pos = a_args.pos;
     Oscillator.radius = a_args.radius;
 
     Oscillator.Init = function()
     {
+        .threads.update = this:thread( .Update );
     };
 
-    Oscillator.GetAngle = function( a_time )
+    Oscillator.Release = function()
     {
-        assert( ?a_time );
+        KillThreads( .threads );
+    };
 
-        local t = .phase + a_time * .frequency;
-        local s = sin( t ) * degtorad( 180 );
+    Oscillator.Update = function()
+    {
+        while ( true )
+        {
+            local delta = g_dt * .frequency;
+            
+            .angle = .angle + delta;
+            .angle = wrap( .angle, 0.0f, TWOPI );
+
+            yield();
+        }
+    };
+
+    Oscillator.GetAngle = function()
+    {
+        local t = .angle;
+        local s = sin( t ) * PI;
 
         return s * .amplitude;
     };
 
     Oscillator.GetV2 = function( a_time )
     {
-        assert( ?a_time );
-
-        local t = .phase + a_time * .frequency;
-        local s = sin( t ) * degtorad( 180 );
-        local c = cos( t ) * degtorad( 180 );
+        local t = .angle;
+        local s = sin( t ) * PI;
+        local c = cos( t ) * PI;
         local v = v2( c, s );
 
         return v * .amplitude;
@@ -48,6 +67,7 @@ global MakeOscillator = function( a_args )
         Imm.DrawCircle( pos, radius );
     };
 
+    Oscillator.Init();
     return Oscillator;
 };
 
@@ -79,6 +99,11 @@ global MakeOscillatorCircle = function()
 
     OscillatorCircle.Release = function()
     {
+        foreach ( oscillator in .oscillators )
+        {
+            oscillator.Release();
+        }
+
         tableClear( .oscillators );
 
         KillThreads( .threads );
@@ -86,9 +111,7 @@ global MakeOscillatorCircle = function()
 
     OscillatorCircle.Reset = function()
     {
-        tableClear( .oscillators );
-
-        KillThreads( .threads );
+        .Release();
 
         local count = .settings.count;
 

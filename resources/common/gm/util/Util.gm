@@ -1,3 +1,8 @@
+
+global PI = degtorad( 180.0f );
+global TWOPI = degtorad( 360.0f );
+global HALFPI = degtorad( 90.0f );
+
 global IsPtInRect = function( pt, rectPos, rectDimen )
 {
 	return pt.x > rectPos.x && pt.x < rectPos.x+rectDimen.x
