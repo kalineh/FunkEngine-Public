@@ -2,9 +2,10 @@
 global g_fileData =
 {
     {
+        dimen = v2i(-1, -1),
         minimized = 0,
         name = "OscillatorCircle",
-        pos = v2i(179, 710),
+        pos = v2i(173, 709),
     },
     {
         dimen = v2i(512, 216),

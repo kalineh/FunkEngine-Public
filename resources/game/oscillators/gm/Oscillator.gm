@@ -169,6 +169,17 @@ global MakeOscillatorCircle = function()
         local amplitude_min = .settings.amplitude_min;
         local amplitude_max = .settings.amplitude_max;
 
+        local range = function( a_min, a_max )
+        {
+            // TODO: fix range to be center on 0.5 instead of 0.0
+
+            local x = randfloat( 0.0f, 1.0f );
+            local c = gaussian( x, 0.0f, 0.2f );
+            local r = a_min + ( a_max - a_min ) * c;
+
+            return r;
+        };
+
         for ( i = 0; i < count; i += 1 )
         {
             local args = {
@@ -176,8 +187,8 @@ global MakeOscillatorCircle = function()
                 pos = v2( randfloat( dimen_min.x, dimen_max.x ), randfloat( dimen_min.y, dimen_max.y ) ),
                 radius = randfloat( radius_min, radius_max ),
                 phase = randfloat( phase_min, phase_max ),
-                frequency = randfloat( frequency_min, frequency_max ),
-                amplitude = randfloat( amplitude_min, amplitude_max ),
+                frequency = range( frequency_min, frequency_max ),
+                amplitude = range( amplitude_min, amplitude_max ),
             };
 
             local oscillator = MakeOscillator( args );
