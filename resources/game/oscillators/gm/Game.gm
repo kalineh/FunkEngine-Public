@@ -16,7 +16,7 @@ local MakeGame = function()
 		Imm.EndDraw();
 		Imm.EndDefaultShader();
 
-		.font.PrintCenterInRect( "Konichiwa", v2(0.0f), g_core.screenDimen, Gfx.BLACK );
+		.font.PrintCenterInRect( "Konnichiwa", v2(0.0f), g_core.screenDimen, Gfx.BLACK );
 	};
 	
 	Game.ClearScreen = function()
