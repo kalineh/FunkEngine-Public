@@ -984,6 +984,18 @@
     <Filter Include="game\blank_game">
       <UniqueIdentifier>{e5f6d68c-39ed-4cea-a3dc-db81ffb244c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\game">
+      <UniqueIdentifier>{bf9acaff-dcf3-4fb7-96fe-c0916196af1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\game\oscillators">
+      <UniqueIdentifier>{a2c55a8e-d7e5-4535-aa6a-779e814e4d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\game\oscillators\gm">
+      <UniqueIdentifier>{945af92d-bf72-459b-a0ef-dbabae8cdfd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\common\gm\user">
+      <UniqueIdentifier>{ec7cf703-2273-4156-b914-97f80701247a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\cpp\engine\math\Complex.inl">
@@ -1171,6 +1183,21 @@
     </None>
     <None Include="..\..\..\..\..\resources\common\gm\gfx\DebugDrawManager.gm">
       <Filter>resources\common\gm\gfx</Filter>
+    </None>
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\DrawLayers.gm">
+      <Filter>resources\game\oscillators\gm</Filter>
+    </None>
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\Game.gm">
+      <Filter>resources\game\oscillators\gm</Filter>
+    </None>
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\Includes.gm">
+      <Filter>resources\game\oscillators\gm</Filter>
+    </None>
+    <None Include="..\..\..\..\..\resources\common\gm\user\user_kalin.gm">
+      <Filter>resources\common\gm\user</Filter>
+    </None>
+    <None Include="..\..\..\..\..\resources\common\gm\user\imgui_state.gm">
+      <Filter>resources\common\gm\user</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -350,6 +350,8 @@
     <None Include="..\..\..\..\..\resources\common\gm\tween\Tween.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\tween\TweenTask.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\tween\TweenTimeline.gm" />
+    <None Include="..\..\..\..\..\resources\common\gm\user\imgui_state.gm" />
+    <None Include="..\..\..\..\..\resources\common\gm\user\user_kalin.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\Ease.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\Imgui.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\ImguiHelper.gm" />
@@ -372,6 +374,9 @@
     <None Include="..\..\..\..\..\resources\common\shaders\immGfxDefaultTex.vp" />
     <None Include="..\..\..\..\..\resources\common\shaders\objDefault.fp" />
     <None Include="..\..\..\..\..\resources\common\shaders\objDefault.vp" />
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\DrawLayers.gm" />
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\Game.gm" />
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\Includes.gm" />
     <None Include="..\..\..\..\cpp\engine\ext\osc\oscpkt.hh" />
     <None Include="..\..\..\..\cpp\engine\ext\osc\udp.hh" />
     <None Include="..\..\..\..\cpp\engine\math\Complex.inl" />

@@ -1,0 +1,17 @@
+/code/platforms/win32/vsproj/FunkEngine/Release/*.obj
+
+/code/platforms/win32/vsproj/FunkEngine/Release/*.tlog
+
+/code/platforms/win32/vsproj/FunkEngine/Release/FunkEngine.lastbuildstate
+/code/platforms/win32/vsproj/FunkEngine/Release/FunkEngine.log
+/code/platforms/win32/vsproj/FunkEngine/Release/FunkEngine.pch
+/code/platforms/win32/vsproj/FunkEngine/Release/FunkEngine.res
+
+/code/platforms/win32/vsproj/FunkEngine.opensdf
+/code/platforms/win32/vsproj/FunkEngine.sdf
+
+/code/platforms/win32/vsproj/FunkEngine/vc110.pdb
+/code/platforms/win32/vsproj/Release/FunkEngine.exe
+/code/platforms/win32/vsproj/Release/FunkEngine.pdb
+
+/resources/LOG.txt

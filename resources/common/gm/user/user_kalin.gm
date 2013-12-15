@@ -1,0 +1,6 @@
+
+DebugSettings.Game = "oscillators";
+DebugSettings.SkipSplash = true;
+DebugSettings.LogEnabled = true;
+DebugSettings.ShowDebugGui = true;
+
