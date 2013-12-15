@@ -299,6 +299,11 @@ local CreateLeapManager = function()
 
 		fork id
 		{
+            if ( DebugSettings.DisableLeapManager )
+            {
+                return;
+            }
+
 			while(true)
 			{
                 RegisterGui( "Leap", .Gui, this );
@@ -310,6 +315,8 @@ local CreateLeapManager = function()
 				yield();
 			}
 		}
+
+        .update_id = id;
 	};
 
     LeapManager.Gui = function()

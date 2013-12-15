@@ -357,6 +357,7 @@
     <None Include="..\..\..\..\..\resources\common\gm\util\ImguiHelper.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\State.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\StateMachine.gm" />
+    <None Include="..\..\..\..\..\resources\common\gm\util\ThreadUtil.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\Tools.gm" />
     <None Include="..\..\..\..\..\resources\common\gm\util\Util.gm" />
     <None Include="..\..\..\..\..\resources\common\shaders\fontDefault.fp" />
@@ -377,6 +378,7 @@
     <None Include="..\..\..\..\..\resources\game\oscillators\gm\DrawLayers.gm" />
     <None Include="..\..\..\..\..\resources\game\oscillators\gm\Game.gm" />
     <None Include="..\..\..\..\..\resources\game\oscillators\gm\Includes.gm" />
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\Oscillator.gm" />
     <None Include="..\..\..\..\cpp\engine\ext\osc\oscpkt.hh" />
     <None Include="..\..\..\..\cpp\engine\ext\osc\udp.hh" />
     <None Include="..\..\..\..\cpp\engine\math\Complex.inl" />

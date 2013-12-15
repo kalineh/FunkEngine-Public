@@ -1,8 +1,45 @@
 local MakeGame = function()
 {
-	local Game = 
+	local Game = table();
+
+    Game.time = 0.0f;
+    Game.frame = 0;
+    Game.threads = table();
+
+	Game.Init = function()
+	{	
+		.cam = Cam2d();
+        .cam.InitScreenSpace();
+
+		system.DoFile( "game/oscillators/gm/Includes.gm" );
+
+		.font = MakeFont( "common/textures/font/droid_10.png", 10 );
+
+		.threads = table();
+		.threads.update = this:thread( .Update );
+	};
+
+	Game.Release = function()
 	{
-		time = 0.0f
+        KillThreads( .threads );
+	};
+	
+	Game.Update = function()
+	{
+		while ( true )
+		{
+			.cam.InitScreenSpace();
+
+			.time += g_dt;
+			.frame += 1;
+
+			RegisterDraw( DrawLayers.Scene_CamBegin, .DrawBegin, this );
+            RegisterDraw( DrawLayers.Scene_Debug, .DrawEnd, this );
+            RegisterDraw( DrawLayers.Scene, .Draw, this );
+			RegisterDraw( DrawLayers.Clear, .ClearScreen, this );
+
+			yield();
+		}
 	};
 
 	Game.Draw = function()
@@ -10,18 +47,18 @@ local MakeGame = function()
 		Imm.BeginDefaultShader();
 		Imm.BeginDraw();
 
-		Imm.Color( Gfx.RED, 1.0f );
+		Imm.Color( Gfx.GREEN, 0.5f );
         Imm.DrawCircle( g_core.screenDimen*0.5, 80.0f );
 
 		Imm.EndDraw();
 		Imm.EndDefaultShader();
 
-		.font.PrintCenterInRect( "Konnichiwa", v2(0.0f), g_core.screenDimen, Gfx.BLACK );
+		.font.PrintCenterInRect( "Oscillators", v2(0.0f), g_core.screenDimen, Gfx.BLACK );
 	};
 	
 	Game.ClearScreen = function()
 	{
-		Gfx.ClearColor(v3(1.0f, 0.4f, 0.0f ));
+		Gfx.ClearColor( v3( 0.3f, 0.4f, 0.8f ) );
 		Gfx.Clear( Gfx.COLOR_BUFFER_BIT | Gfx.DEPTH_BUFFER_BIT );
 	};
 
@@ -35,39 +72,6 @@ local MakeGame = function()
 		.cam.End();
 	};
 
-	Game.Update = function()
-	{
-		while( true )
-		{
-			.cam.InitScreenSpace();
-
-			.time += g_dt;
-
-			RegisterDraw( DrawLayers.Scene_CamBegin, .DrawBegin, this );
-            RegisterDraw( DrawLayers.Scene_Debug, .DrawEnd, this );
-            RegisterDraw( DrawLayers.Scene, .Draw, this);
-			RegisterDraw( DrawLayers.Clear, .ClearScreen, this);
-			yield();
-		}
-	};
-
-	Game.Init = function()
-	{	
-		.cam = Cam2d();
-        .cam.InitScreenSpace();
-
-		system.DoFile("game/blank_game/gm/Includes.gm");
-
-		.font = MakeFont("common/textures/font/droid_10.png", 10 );
-
-		.threadId = this:thread(.Update);
-	};
-
-	Game.Release = function()
-	{
-		threadKill(.threadId);
-	};
-	
 	return Game;
 };
 

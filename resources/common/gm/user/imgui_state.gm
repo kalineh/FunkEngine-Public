@@ -2,9 +2,16 @@
 global g_fileData =
 {
     {
+        dimen = v2i(-1, -1),
         minimized = 0,
         name = "Select Game",
         pos = v2i(150, 710),
+    },
+    {
+        dimen = v2i(512, 216),
+        minimized = 0,
+        name = "Console",
+        pos = v2i(384, 700),
     },
     {
         minimized = 1,

@@ -3,4 +3,6 @@ DebugSettings.Game = "oscillators";
 DebugSettings.SkipSplash = true;
 DebugSettings.LogEnabled = true;
 DebugSettings.ShowDebugGui = true;
+DebugSettings.DisableLeapManager = true;
+
 

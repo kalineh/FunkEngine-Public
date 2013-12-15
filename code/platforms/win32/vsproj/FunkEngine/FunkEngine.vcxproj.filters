@@ -1199,6 +1199,12 @@
     <None Include="..\..\..\..\..\resources\common\gm\user\imgui_state.gm">
       <Filter>resources\common\gm\user</Filter>
     </None>
+    <None Include="..\..\..\..\..\resources\game\oscillators\gm\Oscillator.gm">
+      <Filter>resources\game\oscillators\gm</Filter>
+    </None>
+    <None Include="..\..\..\..\..\resources\common\gm\util\ThreadUtil.gm">
+      <Filter>resources\common\gm\util</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FunkEngine.rc">

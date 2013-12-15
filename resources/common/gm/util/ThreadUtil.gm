@@ -1,0 +1,30 @@
+//
+// ThreadUtil.gm
+//
+
+global KillThreads = function( a_table )
+{
+    local kill_recursive = function( a_table )
+    {
+        foreach ( item in a_table )
+        {
+            if ( typeId( item ) == g_type_id.table_t )
+            {
+                kill_recursive( item );
+                continue;
+            }
+
+            assert( typeId( item ) == g_type_id.int );
+
+            // TODO: need special handling to make sure we dont kill our own thread
+            //       or need to defer thread kills until next yield
+            assert( item != threadId() );
+
+            threadKill( item );
+        }
+    };
+
+    kill_recursive( a_table );
+
+    tableClear( a_table );
+};

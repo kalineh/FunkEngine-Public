@@ -1,0 +1,122 @@
+
+global MakeOscillator = function( a_args )
+{
+    local Oscillator = table();
+
+    Oscillator.phase = a_args.phase;
+    Oscillator.frequency = a_args.frequency;
+
+    Oscillator.pos = a_args.pos;
+    Oscillator.radius = a_args.radius;
+
+    Oscillator.Init = function()
+    {
+    };
+
+    Oscillator.Get = function( a_time )
+    {
+        return sin( .phase + a_time * .frequency );
+    };
+
+    Oscillator.Draw = function()
+    {
+        local hsv = v3( .frequency, 0.5f, 1.0f );
+        local rgb = HSVtoRGB( hsv );
+        local pos = .pos;
+        local radius = .radius;
+        
+        Imm.Color( rgb, 1.0f );
+        Imm.DrawCircle( pos, radius );
+    };
+
+    return Oscillator;
+};
+
+
+global MakeOscillatorCircle = function()
+{
+    local OscillatorCircle = table();
+
+    Oscillator.oscillators = table();
+
+    Oscillator.Init = function()
+    {
+        for ( i = 0; i < 32; i += 1 )
+        {
+            local args = {
+                pos = v2( randfloat( 0.0f, 1.0f ), randfloat( 0.0f, 1.0f ) ),
+                radius = v2( randfloat( 0.5f, 1.0f ), randfloat( 0.0f, 1.0f ) ),
+                phase = 0.0f,
+                frequency = 1.0f,
+            };
+            local oscillator = MakeOscillator( args );
+
+            .oscillators[] = oscillator;
+        }
+
+        .threads = table(); 
+        .threads.update = this:thread( .Update );
+        .threads.draw = this:thread( .Draw );
+        .threads.gui = this:thread( .Gui );
+    };
+
+    Oscillator.Release = function()
+    {
+        KillThreads( .threads );
+    };
+
+    Oscillator.Update = function()
+    {
+        while ( true )
+        {
+            // sum field average
+            // - or distance based
+            // - or nearest neighbour
+            // - or other?
+
+            yield();
+        }
+    };
+
+    Oscillator.Draw = function()
+    {
+        local draw = function()
+        {
+    		Imm.BeginDefaultShader();
+    		Imm.BeginDraw();
+
+            local base_position = g_core.screenDimen * 0.5f;
+
+            foreach ( oscillator in .oscillators )
+            {
+                oscillator.Draw( base_position );
+            }
+
+    		Imm.EndDraw();
+    		Imm.EndDefaultShader();
+        };
+
+        while ( true )
+        {
+            RegisterDraw( DrawLayers.Scene, draw, this );
+            yield();
+        }
+    };
+
+    Oscillator.Gui = function()
+    {
+        local gui = function()
+        {
+    		Gui.Header( "Oscillator" );
+        };
+
+        while ( true )
+        {
+			RegisterGui( "Oscillator", gui );
+
+            yield();
+        }
+    };
+
+    return Oscillator;
+};

@@ -1,1 +1,3 @@
-system.DoFile("game/blank_game/gm/DrawLayers.gm");
+
+system.DoFile("game/oscillators/gm/DrawLayers.gm");
+system.DoFile("game/oscillators/gm/Oscillator.gm");
