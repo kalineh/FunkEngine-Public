@@ -14,13 +14,26 @@ global MakeOscillator = function( a_args )
     {
     };
 
-    Oscillator.GetV2 = function( a_time )
+    Oscillator.GetAngle = function( a_time )
     {
+        assert( ?a_time );
+
         local t = .phase + a_time * .frequency;
         local s = sin( t ) * degtorad( 180 );
-        local v = rotateAxisY( v3( 1.0f, 0.0f, 0.0f ), s );
 
-        return v2( v.x, v.z ) * .amplitude;
+        return s * .amplitude;
+    };
+
+    Oscillator.GetV2 = function( a_time )
+    {
+        assert( ?a_time );
+
+        local t = .phase + a_time * .frequency;
+        local s = sin( t ) * degtorad( 180 );
+        local c = cos( t ) * degtorad( 180 );
+        local v = v2( c, s );
+
+        return v * .amplitude;
     };
 
     Oscillator.Draw = function( a_base_position )
@@ -56,8 +69,8 @@ global MakeOscillatorCircle = function()
     OscillatorCircle.settings.phase_max = 1.0f;
     OscillatorCircle.settings.frequency_min = 0.0f;
     OscillatorCircle.settings.frequency_max = 2.0f;
-    OscillatorCircle.settings.amplitude_min = 128.0f;
-    OscillatorCircle.settings.amplitude_max = 140.0f;
+    OscillatorCircle.settings.amplitude_min = 32.0f;
+    OscillatorCircle.settings.amplitude_max = 48.0f;
 
     OscillatorCircle.Init = function()
     {
@@ -123,6 +136,40 @@ global MakeOscillatorCircle = function()
         }
     };
 
+    OscillatorCircle.GetFieldAverageV2 = function()
+    {
+        local time = g_game.time;
+        local average = v2( 0.0f );
+
+        foreach ( oscillator in .oscillators )
+        {
+            local v = oscillator.GetV2( time );
+            
+            average += v;
+        }
+
+        average /= tableCount( .oscillators ).Float();
+
+        return average;
+    };
+
+    OscillatorCircle.GetFieldAverageAngle = function()
+    {
+        local time = g_game.time;
+        local average = 0.0f;
+
+        foreach ( oscillator in .oscillators )
+        {
+            local v = oscillator.GetAngle( time );
+            
+            average += v;
+        }
+
+        average /= tableCount( .oscillators ).Float();
+
+        return average;
+    };
+
     OscillatorCircle.Draw = function()
     {
         local draw = function()
@@ -136,6 +183,11 @@ global MakeOscillatorCircle = function()
             {
                 oscillator.Draw( base_position );
             }
+
+            local average = .GetFieldAverageV2();
+
+            Imm.Color( Gfx.RED, 1.0f );
+            Imm.DrawCircle( base_position + average, 8.0f );
 
     		Imm.EndDraw();
     		Imm.EndDefaultShader();
@@ -154,17 +206,34 @@ global MakeOscillatorCircle = function()
         {
     		Gui.Header( "Settings" );
 
-            .settings.count = Gui.SliderInt( "Count", .settings.count, 1, 128 );
+            local previous = tableDuplicate( .settings );
+
+            .settings.count = Gui.SliderInt( "Count", .settings.count, 1, 1024 );
             //.settings.dimen_min = Gui.SliderFloat( "Dimension (min)", .settings.dimen_min, 0.0f, 0.0f );
             //.settings.dimen_max = Gui.SliderFloat( "Dimension (max)", .settings.dimen_max, 0.0f, 0.0f );
             .settings.radius_min = Gui.SliderFloat( "Radius (min)", .settings.radius_min, 1.0f, 32.0f );
             .settings.radius_max = Gui.SliderFloat( "Radius (max)", .settings.radius_max, 1.0f, 32.0f );
             .settings.phase_min = Gui.SliderFloat( "Phase (min)", .settings.phase_min, 0.1f, 1.0f );
             .settings.phase_max = Gui.SliderFloat( "Phase (max)", .settings.phase_max, 0.1f, 1.0f );
-            .settings.frequency_min = Gui.SliderFloat( "Frequency (min)", .settings.frequency_min, 0.0f, 16.0f );
-            .settings.frequency_max = Gui.SliderFloat( "Frequency (max)", .settings.frequency_max, 0.0f, 16.0f );
-            .settings.amplitude_min = Gui.SliderFloat( "Amplitude (min)", .settings.amplitude_min, 0.0f, 512.0f );
-            .settings.amplitude_max = Gui.SliderFloat( "Amplitude (max)", .settings.amplitude_max, 0.0f, 512.0f );
+            .settings.frequency_min = Gui.SliderFloat( "Frequency (min)", .settings.frequency_min, 0.0f, 4.0f );
+            .settings.frequency_max = Gui.SliderFloat( "Frequency (max)", .settings.frequency_max, 0.0f, 4.0f );
+            .settings.amplitude_min = Gui.SliderFloat( "Amplitude (min)", .settings.amplitude_min, 0.0f, 128.0f );
+            .settings.amplitude_max = Gui.SliderFloat( "Amplitude (max)", .settings.amplitude_max, 0.0f, 128.0f );
+
+            foreach ( key and value in previous )
+            {
+                if ( value != .settings[ key ] )
+                {
+                    .Reset();
+
+                    break;
+                }
+            }
+
+            local average_v2 = .GetFieldAverageV2();
+            local average_angle = .GetFieldAverageAngle();
+
+            Gui.Print( format( "average: %f (%f,%f)", average_angle, average_v2.x, average_v2.y ) );
 
             // TODO: shuffle
 

@@ -2,10 +2,9 @@
 global g_fileData =
 {
     {
-        dimen = v2i(-1, -1),
         minimized = 0,
-        name = "Select Game",
-        pos = v2i(150, 710),
+        name = "OscillatorCircle",
+        pos = v2i(178, 711),
     },
     {
         dimen = v2i(512, 216),
@@ -14,9 +13,10 @@ global g_fileData =
         pos = v2i(384, 700),
     },
     {
+        dimen = v2i(-1, -1),
         minimized = 0,
-        name = "OscillatorCircle",
-        pos = v2i(120, 707),
+        name = "Select Game",
+        pos = v2i(150, 710),
     },
     {
         dimen = v2i(-1, -1),
