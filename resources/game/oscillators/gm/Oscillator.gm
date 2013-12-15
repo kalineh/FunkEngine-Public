@@ -4,6 +4,7 @@ global MakeOscillator = function( a_args )
     local Oscillator = table();
 
     Oscillator.threads = table();
+    Oscillator.owner = a_args.owner;
 
     Oscillator.phase = a_args.phase;
     Oscillator.frequency = a_args.frequency;
@@ -26,28 +27,68 @@ global MakeOscillator = function( a_args )
 
     Oscillator.Update = function()
     {
+        local average = .owner.GetFieldAverageAngle();
+        local convergence = .owner.settings.convergence;
+
+        local collect_deltas = function()
+        {
+            local delta = 0.0f;
+            local convergence = .owner.settings.convergence;
+            local normalizer = convergence / tableCount( .owner.oscillators ).Float();
+
+            foreach ( oscillator in .owner.oscillators )
+            {
+                if ( oscillator == this )
+                {
+                    continue;
+                }
+
+                local diff = AngleDiff( oscillator.angle, .angle );
+                
+                delta += sin( diff ) * normalizer;
+            }
+
+            return delta;
+        };
+
         while ( true )
         {
-            local delta = g_dt * .frequency;
-            
+            local time = .GetAngle();
+
+            //local delta = g_dt * .frequency;
+            //local diff = AngleDiff( average, angle );
+            //delta += g_dt * sin( diff ) * convergence;
+
+            local delta = g_dt * .frequency + g_dt * this:collect_deltas();
+
             .angle = .angle + delta;
-            .angle = wrap( .angle, 0.0f, TWOPI );
+            .angle = wrap( .angle, -PI, PI );
 
             yield();
         }
     };
 
-    Oscillator.GetAngle = function()
+    Oscillator.GetTime = function()
     {
-        local t = .angle;
-        local s = sin( t ) * PI;
+        if ( .owner.global_time )
+        {
+            return g_game.time + .phase;
+        }
 
-        return s * .amplitude;
+        return .angle;
     };
 
-    Oscillator.GetV2 = function( a_time )
+    Oscillator.GetAngle = function()
     {
-        local t = .angle;
+        local t = .GetTime();
+        local s = sin( t ) * PI;
+
+        return s;
+    };
+
+    Oscillator.GetV2 = function()
+    {
+        local t = .GetTime();
         local s = sin( t ) * PI;
         local c = cos( t ) * PI;
         local v = v2( c, s );
@@ -80,12 +121,14 @@ global MakeOscillatorCircle = function()
 
     OscillatorCircle.settings = table();
     OscillatorCircle.settings.count = 32;
+    OscillatorCircle.settings.global_time = false;
+    OscillatorCircle.settings.convergence = 0.7f;
     OscillatorCircle.settings.dimen_min = 0.0f;
     OscillatorCircle.settings.dimen_max = 0.0f;
     OscillatorCircle.settings.radius_min = 1.0f;
     OscillatorCircle.settings.radius_max = 5.0f;
-    OscillatorCircle.settings.phase_min = 0.0f;
-    OscillatorCircle.settings.phase_max = 1.0f;
+    OscillatorCircle.settings.phase_min = -PI;
+    OscillatorCircle.settings.phase_max = PI;
     OscillatorCircle.settings.frequency_min = 0.0f;
     OscillatorCircle.settings.frequency_max = 2.0f;
     OscillatorCircle.settings.amplitude_min = 32.0f;
@@ -113,6 +156,7 @@ global MakeOscillatorCircle = function()
         .Release();
 
         local count = .settings.count;
+        local convergence = .settings.convergence;
 
         local dimen_min = g_core.screenDimen * .settings.dimen_min;
         local dimen_max = g_core.screenDimen * .settings.dimen_max;
@@ -128,6 +172,7 @@ global MakeOscillatorCircle = function()
         for ( i = 0; i < count; i += 1 )
         {
             local args = {
+                owner = this,
                 pos = v2( randfloat( dimen_min.x, dimen_max.x ), randfloat( dimen_min.y, dimen_max.y ) ),
                 radius = randfloat( radius_min, radius_max ),
                 phase = randfloat( phase_min, phase_max ),
@@ -229,12 +274,14 @@ global MakeOscillatorCircle = function()
             local previous = tableDuplicate( .settings );
 
             .settings.count = Gui.SliderInt( "Count", .settings.count, 1, 1024 );
+            .settings.global_time = Gui.CheckBox( "Global Time", .settings.global_time );
+            .settings.convergence = Gui.SliderFloat( "Convergence", .settings.convergence, 0.0f, 1.0f );
             //.settings.dimen_min = Gui.SliderFloat( "Dimension (min)", .settings.dimen_min, 0.0f, 0.0f );
             //.settings.dimen_max = Gui.SliderFloat( "Dimension (max)", .settings.dimen_max, 0.0f, 0.0f );
             .settings.radius_min = Gui.SliderFloat( "Radius (min)", .settings.radius_min, 1.0f, 32.0f );
             .settings.radius_max = Gui.SliderFloat( "Radius (max)", .settings.radius_max, 1.0f, 32.0f );
-            .settings.phase_min = Gui.SliderFloat( "Phase (min)", .settings.phase_min, 0.1f, 1.0f );
-            .settings.phase_max = Gui.SliderFloat( "Phase (max)", .settings.phase_max, 0.1f, 1.0f );
+            .settings.phase_min = Gui.SliderFloat( "Phase (min)", .settings.phase_min, -PI, PI );
+            .settings.phase_max = Gui.SliderFloat( "Phase (max)", .settings.phase_max, -PI, PI );
             .settings.frequency_min = Gui.SliderFloat( "Frequency (min)", .settings.frequency_min, 0.0f, 4.0f );
             .settings.frequency_max = Gui.SliderFloat( "Frequency (max)", .settings.frequency_max, 0.0f, 4.0f );
             .settings.amplitude_min = Gui.SliderFloat( "Amplitude (min)", .settings.amplitude_min, 0.0f, 128.0f );
