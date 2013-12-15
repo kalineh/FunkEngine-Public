@@ -15,3 +15,5 @@
 /code/platforms/win32/vsproj/Release/FunkEngine.pdb
 
 /resources/LOG.txt
+
+/code/platforms/win32/vsproj/FunkEngine/Release/FunkEngine.Build.CppClean.log

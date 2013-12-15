@@ -27,6 +27,7 @@ system.DoFile("common/gm/util/Ease.gm");
 system.DoFile("common/gm/util/State.gm");
 system.DoFile("common/gm/util/StateMachine.gm");
 system.DoFile("common/gm/util/Util.gm");
+system.DoFile("common/gm/util/ThreadUtil.gm");
 system.DoFile("common/gm/util/Imgui.gm");
 system.DoFile("common/gm/util/ImguiHelper.gm");
 //if ( g_debug ) { system.DoFile("common/gm/util/Tools.gm"); }

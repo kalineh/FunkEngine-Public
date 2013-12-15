@@ -14,8 +14,20 @@ global g_fileData =
         pos = v2i(384, 700),
     },
     {
+        minimized = 0,
+        name = "OscillatorCircle",
+        pos = v2i(120, 707),
+    },
+    {
+        dimen = v2i(-1, -1),
         minimized = 1,
         name = "Leap",
         pos = v2i(300, 710),
+    },
+    {
+        dimen = v2i(-1, -1),
+        minimized = 0,
+        name = "GameMonkey Settings",
+        pos = v2i(300, 700),
     },
 };

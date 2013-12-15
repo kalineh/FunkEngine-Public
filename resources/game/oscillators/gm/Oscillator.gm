@@ -5,6 +5,7 @@ global MakeOscillator = function( a_args )
 
     Oscillator.phase = a_args.phase;
     Oscillator.frequency = a_args.frequency;
+    Oscillator.amplitude = a_args.amplitude;
 
     Oscillator.pos = a_args.pos;
     Oscillator.radius = a_args.radius;
@@ -13,18 +14,23 @@ global MakeOscillator = function( a_args )
     {
     };
 
-    Oscillator.Get = function( a_time )
+    Oscillator.GetV2 = function( a_time )
     {
-        return sin( .phase + a_time * .frequency );
+        local t = .phase + a_time * .frequency;
+        local s = sin( t ) * degtorad( 180 );
+        local v = rotateAxisY( v3( 1.0f, 0.0f, 0.0f ), s );
+
+        return v2( v.x, v.z ) * .amplitude;
     };
 
-    Oscillator.Draw = function()
+    Oscillator.Draw = function( a_base_position )
     {
+        local time = g_game.time;
         local hsv = v3( .frequency, 0.5f, 1.0f );
         local rgb = HSVtoRGB( hsv );
-        local pos = .pos;
+        local pos = a_base_position + .pos + .GetV2( time );
         local radius = .radius;
-        
+
         Imm.Color( rgb, 1.0f );
         Imm.DrawCircle( pos, radius );
     };
@@ -37,35 +43,74 @@ global MakeOscillatorCircle = function()
 {
     local OscillatorCircle = table();
 
-    Oscillator.oscillators = table();
+    OscillatorCircle.threads = table(); 
+    OscillatorCircle.oscillators = table();
 
-    Oscillator.Init = function()
+    OscillatorCircle.settings = table();
+    OscillatorCircle.settings.count = 32;
+    OscillatorCircle.settings.dimen_min = 0.0f;
+    OscillatorCircle.settings.dimen_max = 0.0f;
+    OscillatorCircle.settings.radius_min = 1.0f;
+    OscillatorCircle.settings.radius_max = 5.0f;
+    OscillatorCircle.settings.phase_min = 0.0f;
+    OscillatorCircle.settings.phase_max = 1.0f;
+    OscillatorCircle.settings.frequency_min = 0.0f;
+    OscillatorCircle.settings.frequency_max = 2.0f;
+    OscillatorCircle.settings.amplitude_min = 128.0f;
+    OscillatorCircle.settings.amplitude_max = 140.0f;
+
+    OscillatorCircle.Init = function()
     {
-        for ( i = 0; i < 32; i += 1 )
+        .Reset();
+    };
+
+    OscillatorCircle.Release = function()
+    {
+        tableClear( .oscillators );
+
+        KillThreads( .threads );
+    };
+
+    OscillatorCircle.Reset = function()
+    {
+        tableClear( .oscillators );
+
+        KillThreads( .threads );
+
+        local count = .settings.count;
+
+        local dimen_min = g_core.screenDimen * .settings.dimen_min;
+        local dimen_max = g_core.screenDimen * .settings.dimen_max;
+        local radius_min = .settings.radius_min;
+        local radius_max = .settings.radius_max;
+        local phase_min = .settings.phase_min;
+        local phase_max = .settings.phase_max;
+        local frequency_min = .settings.frequency_min;
+        local frequency_max = .settings.frequency_max;
+        local amplitude_min = .settings.amplitude_min;
+        local amplitude_max = .settings.amplitude_max;
+
+        for ( i = 0; i < count; i += 1 )
         {
             local args = {
-                pos = v2( randfloat( 0.0f, 1.0f ), randfloat( 0.0f, 1.0f ) ),
-                radius = v2( randfloat( 0.5f, 1.0f ), randfloat( 0.0f, 1.0f ) ),
-                phase = 0.0f,
-                frequency = 1.0f,
+                pos = v2( randfloat( dimen_min.x, dimen_max.x ), randfloat( dimen_min.y, dimen_max.y ) ),
+                radius = randfloat( radius_min, radius_max ),
+                phase = randfloat( phase_min, phase_max ),
+                frequency = randfloat( frequency_min, frequency_max ),
+                amplitude = randfloat( amplitude_min, amplitude_max ),
             };
+
             local oscillator = MakeOscillator( args );
 
             .oscillators[] = oscillator;
         }
 
-        .threads = table(); 
         .threads.update = this:thread( .Update );
         .threads.draw = this:thread( .Draw );
         .threads.gui = this:thread( .Gui );
     };
 
-    Oscillator.Release = function()
-    {
-        KillThreads( .threads );
-    };
-
-    Oscillator.Update = function()
+    OscillatorCircle.Update = function()
     {
         while ( true )
         {
@@ -78,7 +123,7 @@ global MakeOscillatorCircle = function()
         }
     };
 
-    Oscillator.Draw = function()
+    OscillatorCircle.Draw = function()
     {
         local draw = function()
         {
@@ -103,20 +148,40 @@ global MakeOscillatorCircle = function()
         }
     };
 
-    Oscillator.Gui = function()
+    OscillatorCircle.Gui = function()
     {
         local gui = function()
         {
-    		Gui.Header( "Oscillator" );
+    		Gui.Header( "Settings" );
+
+            .settings.count = Gui.SliderInt( "Count", .settings.count, 1, 128 );
+            //.settings.dimen_min = Gui.SliderFloat( "Dimension (min)", .settings.dimen_min, 0.0f, 0.0f );
+            //.settings.dimen_max = Gui.SliderFloat( "Dimension (max)", .settings.dimen_max, 0.0f, 0.0f );
+            .settings.radius_min = Gui.SliderFloat( "Radius (min)", .settings.radius_min, 1.0f, 32.0f );
+            .settings.radius_max = Gui.SliderFloat( "Radius (max)", .settings.radius_max, 1.0f, 32.0f );
+            .settings.phase_min = Gui.SliderFloat( "Phase (min)", .settings.phase_min, 0.1f, 1.0f );
+            .settings.phase_max = Gui.SliderFloat( "Phase (max)", .settings.phase_max, 0.1f, 1.0f );
+            .settings.frequency_min = Gui.SliderFloat( "Frequency (min)", .settings.frequency_min, 0.0f, 16.0f );
+            .settings.frequency_max = Gui.SliderFloat( "Frequency (max)", .settings.frequency_max, 0.0f, 16.0f );
+            .settings.amplitude_min = Gui.SliderFloat( "Amplitude (min)", .settings.amplitude_min, 0.0f, 512.0f );
+            .settings.amplitude_max = Gui.SliderFloat( "Amplitude (max)", .settings.amplitude_max, 0.0f, 512.0f );
+
+            // TODO: shuffle
+
+            if ( Gui.Button( "Reset" ) )
+            {
+                .Reset();
+            }
         };
 
         while ( true )
         {
-			RegisterGui( "Oscillator", gui );
+			RegisterGui( "OscillatorCircle", gui, this );
 
             yield();
         }
     };
 
-    return Oscillator;
+    OscillatorCircle.Init();
+    return OscillatorCircle;
 };

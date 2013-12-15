@@ -17,10 +17,14 @@ local MakeGame = function()
 
 		.threads = table();
 		.threads.update = this:thread( .Update );
+
+        .oscillator_circle = MakeOscillatorCircle();
 	};
 
 	Game.Release = function()
 	{
+        .oscillator_circle.Release();
+
         KillThreads( .threads );
 	};
 	
