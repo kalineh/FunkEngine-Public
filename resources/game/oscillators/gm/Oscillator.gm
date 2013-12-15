@@ -57,10 +57,9 @@ global MakeOscillator = function( a_args )
 
     Oscillator.Draw = function( a_base_position )
     {
-        local time = g_game.time;
         local hsv = v3( .frequency, 0.5f, 1.0f );
         local rgb = HSVtoRGB( hsv );
-        local pos = a_base_position + .pos + .GetV2( time );
+        local pos = a_base_position + .pos + .GetV2();
         local radius = .radius;
 
         Imm.Color( rgb, 1.0f );
@@ -161,12 +160,11 @@ global MakeOscillatorCircle = function()
 
     OscillatorCircle.GetFieldAverageV2 = function()
     {
-        local time = g_game.time;
         local average = v2( 0.0f );
 
         foreach ( oscillator in .oscillators )
         {
-            local v = oscillator.GetV2( time );
+            local v = oscillator.GetV2();
             
             average += v;
         }
@@ -178,12 +176,11 @@ global MakeOscillatorCircle = function()
 
     OscillatorCircle.GetFieldAverageAngle = function()
     {
-        local time = g_game.time;
         local average = 0.0f;
 
         foreach ( oscillator in .oscillators )
         {
-            local v = oscillator.GetAngle( time );
+            local v = oscillator.GetAngle();
             
             average += v;
         }
